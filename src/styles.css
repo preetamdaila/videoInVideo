@@ -1,0 +1,71 @@
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+:root {
+    --videoWidth: 80vw;
+    --controlsHeight: 50px;
+    --transition: bottom 200ms ease-in 150ms;
+}
+.App {
+    margin: 10px 10vw;
+}
+.yellow {
+    background-color: yellow;
+}
+.green {
+    background-color: green;
+}
+.aspectRatioVideo {
+    aspect-ratio: 16/9;
+}
+.positionRelative {
+    position: relative;
+}
+.positionAbsolute {
+    position: absolute;
+}
+.videoContainer {
+    width: var(--videoWidth);
+    background-color: lightslategrey;
+    overflow: hidden;
+}
+.largeVideo {
+    width: var(--videoWidth);
+    top: 0;
+    pointer-events: none;
+}
+.smallVideo {
+    height: calc(var(--videoWidth) / 4);
+    bottom: 1em;
+    right: 1em;
+    cursor: pointer;
+    z-index: 1;
+    border: 1px solid #bebebe;
+    -webkit-transition: var(--transition);
+    -moz-transition: var(--transition);
+    -o-transition: var(--transition);
+    transition: var(--transition);
+}
+.smallVideo:hover {
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 3px 6px 0 rgb(0 0 0 / 20%);
+}
+.controlBar {
+    width: var(--videoWidth);
+    height: var(--controlsHeight);
+    background-color: rgba(0, 0, 0, 0.7);
+    bottom: calc(var(--controlsHeight) * -1);
+    -webkit-transition: var(--transition);
+    -moz-transition: var(--transition);
+    -o-transition: var(--transition);
+    transition: var(--transition);
+}
+.videoContainer:hover .smallVideo {
+    bottom: calc(var(--controlsHeight) + 1em);
+}
+.videoContainer:hover .controlBar {
+    bottom: 0;
+}

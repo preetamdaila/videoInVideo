@@ -1,2 +1,2 @@
 # videoInVideo
-Created with CodeSandbox
+One to one video call style video player
