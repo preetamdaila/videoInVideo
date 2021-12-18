@@ -5,41 +5,52 @@
     margin: 0;
     padding: 0;
 }
+
 :root {
     --videoWidth: 80vw;
     --controlsHeight: 50px;
+    --progressHeight: 3px;
     --transition: bottom 200ms ease-in 150ms;
 }
+
 .App {
     margin: 10px 10vw;
 }
+
 .yellow {
     background-color: yellow;
 }
+
 .green {
     background-color: green;
 }
+
 .aspectRatioVideo {
     aspect-ratio: 16/9;
 }
+
 .positionRelative {
     position: relative;
 }
+
 .positionAbsolute {
     position: absolute;
 }
+
 .videoContainer {
     width: var(--videoWidth);
     background-color: lightslategrey;
     overflow: hidden;
 }
-.largeVideo {
+
+.mainVideo {
     width: var(--videoWidth);
     top: 0;
     pointer-events: none;
 }
-.smallVideo {
-    height: calc(var(--videoWidth) / 4);
+
+.subVideo {
+    height: calc(var(--videoWidth) / 5);
     bottom: 1em;
     right: 1em;
     cursor: pointer;
@@ -50,22 +61,69 @@
     -o-transition: var(--transition);
     transition: var(--transition);
 }
-.smallVideo:hover {
+
+.subVideo:hover {
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 3px 6px 0 rgb(0 0 0 / 20%);
 }
+
 .controlBar {
-    width: var(--videoWidth);
-    height: var(--controlsHeight);
-    background-color: rgba(0, 0, 0, 0.7);
-    bottom: calc(var(--controlsHeight) * -1);
+    bottom: calc((var(--controlsHeight) + var(--progressHeight)) * -1);
+    display: grid;
+    grid-template-columns: 1fr;
     -webkit-transition: var(--transition);
     -moz-transition: var(--transition);
     -o-transition: var(--transition);
     transition: var(--transition);
 }
-.videoContainer:hover .smallVideo {
-    bottom: calc(var(--controlsHeight) + 1em);
+
+.controlBar .progressBar {
+    margin-top: calc(var(--progressHeight) * -1px);
+    position: relative;
+    cursor: pointer;
 }
+
+.controlBar .progressBar::before {
+    content: "";
+    background-color: #00acff;
+    opacity: 0.25;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--progressHeight);
+}
+
+.controlBar .progressBar .currentStatus {
+    height: var(--progressHeight);
+    background-color: #00acff;
+    width: 100%;
+    left: 0;
+    transform-origin: 0 0;
+}
+
+.controlBar .progressBar .bufferStatus {
+    opacity: 0.5;
+    height: var(--progressHeight);
+    background-color: #00acff;
+    width: 100%;
+    left: 0;
+    transform-origin: 0 0;
+}
+
+.controlBar .controls {
+    width: var(--videoWidth);
+    height: var(--controlsHeight);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.videoContainer:hover .subVideo {
+    bottom: calc(var(--controlsHeight) + var(--progressHeight) + 1em);
+}
+
 .videoContainer:hover .controlBar {
     bottom: 0;
+}
+
+.controlBar .progressBar:hover {
+    --progressHeight: 8px;
 }
