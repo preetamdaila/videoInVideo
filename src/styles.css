@@ -36,7 +36,11 @@
 .positionAbsolute {
     position: absolute;
 }
-
+.displayFlex {
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+}
 .videoContainer {
     width: var(--videoWidth);
     background-color: lightslategrey;
@@ -70,6 +74,7 @@
     bottom: calc((var(--controlsHeight) + var(--progressHeight)) * -1);
     display: grid;
     grid-template-columns: 1fr;
+    width: 100%;
     -webkit-transition: var(--transition);
     -moz-transition: var(--transition);
     -o-transition: var(--transition);
@@ -77,9 +82,9 @@
 }
 
 .controlBar .progressBar {
-    margin-top: calc(var(--progressHeight) * -1px);
-    position: relative;
+    height: var(--progressHeight);
     cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .controlBar .progressBar::before {
@@ -113,7 +118,41 @@
 .controlBar .controls {
     width: var(--videoWidth);
     height: var(--controlsHeight);
+    justify-content: space-between;
     background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+}
+
+.controlBar .controls .controlIcon,
+.controlBar .controls .controlIcon img {
+    height: var(--controlsHeight);
+    cursor: pointer;
+}
+
+.controlBar .controls .controlTime {
+    align-items: center;
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+    height: var(--controlsHeight);
+}
+
+.controlBar .controls .controlTime .currentTime {
+    padding: 0 0.5rem;
+}
+
+.controlBar .controls .controlTime .duration {
+    padding: 0 0.5rem;
+    border-left: 1px solid #fff;
+}
+
+.videoContainer:-webkit-full-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    --videoWidth: 100%;
+}
+.videoContainer:-webkit-full-screen .mainVideo {
+    height: 100%;
 }
 
 .videoContainer:hover .subVideo {
@@ -126,4 +165,8 @@
 
 .controlBar .progressBar:hover {
     --progressHeight: 8px;
+}
+
+.controlBar .controls .controlIcon:hover {
+    background-color: #fff4;
 }
