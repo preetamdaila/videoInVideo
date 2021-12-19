@@ -70,7 +70,11 @@ export const TwoVideoContainer = (props) => {
         setDuration(totalTime);
     };
     const setCurrentStatus = () => {
+        console.log(currentTime, duration, currentTime / duration);
         if (duration > 0) setCurrentPostion(currentTime / duration);
+    };
+    const seekVideo = (time) => {
+        videoElements.map((e) => (e.currentTime = time));
     };
     const timeConverter = (timeInSeconds) => {
         let minutes = Math.floor(timeInSeconds / 60);
@@ -84,15 +88,14 @@ export const TwoVideoContainer = (props) => {
     const flipFullscreen = () => {
         let videoContainer = document.getElementById("videoContainer");
         if (isFullscreen) {
-            if (videoContainer.requestFullscreen) {
-                videoContainer.requestFullscreen();
-            } else if (videoContainer.webkitRequestFullScreen) {
-                videoContainer.webkitRequestFullScreen();
-            } else if (videoContainer.mozRequestFullScreen) {
-                videoContainer.mozRequestFullScreen();
-            }
-            if (videoContainer.msRequestFullscreen) {
-                videoContainer.msRequestFullscreen();
+            var requestMethod =
+                videoContainer.requestFullScreen ||
+                videoContainer.webkitRequestFullscreen ||
+                videoContainer.webkitRequestFullScreen ||
+                videoContainer.mozRequestFullScreen ||
+                videoContainer.msRequestFullscreen;
+            if (requestMethod) {
+                requestMethod.apply(videoContainer);
             }
         } else {
             try {
@@ -100,6 +103,16 @@ export const TwoVideoContainer = (props) => {
                 document.mozCancelFullScreen();
             } catch (e) {}
         }
+    };
+    const getMousePostion = (e) => {
+        let elemRect = e.target.getBoundingClientRect();
+        let elemLen = elemRect.right - elemRect.left;
+        let elemPos = e.clientX - elemRect.left;
+        let progress = (elemPos < 0 ? 0 : elemPos) / elemLen;
+        let jumpTime = duration * progress;
+        console.log(`${progress}% ${elemPos} ${elemLen}
+        duration: ${timeConverter(Math.round(jumpTime))}`);
+        return jumpTime;
     };
     console.log(
         `arePaused: ${arePaused}, areWaiting ${areWaiting}
@@ -161,7 +174,12 @@ export const TwoVideoContainer = (props) => {
                 src={audioVideoRecording}
             />
             <div className="controlBar positionAbsolute">
-                <div className="progressBar positionRelative">
+                <div
+                    className="progressBar positionRelative"
+                    id="progressBar"
+                    onMouseMove={(e) => getMousePostion(e)}
+                    onMouseUp={(e) => seekVideo(getMousePostion(e))}
+                >
                     <div
                         className="currentStatus positionAbsolute"
                         style={{ transform: `scaleX(${currentPostion})` }}
