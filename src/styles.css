@@ -7,7 +7,7 @@
 }
 
 :root {
-    --videoWidth: 80vw;
+    --videoWidth: 700px;
     --controlsHeight: 50px;
     --progressHeight: 3px;
     --transition: bottom 200ms ease-in 150ms;
@@ -84,7 +84,9 @@
 .controlBar .progressBar {
     height: var(--progressHeight);
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: transparent;
+    border-bottom: calc(var(--progressHeight) * 2) solid transparent;
+    bottom: calc(var(--progressHeight) * -1);
 }
 
 .controlBar .progressBar::before {
@@ -114,7 +116,24 @@
     left: 0;
     transform-origin: 0 0;
 }
-
+.controlBar .progressBar .mouseOverProgress {
+    opacity: 0.5;
+    height: var(--progressHeight);
+    background-color: #fff;
+    width: 100%;
+    left: 0;
+    transform-origin: 0 0;
+}
+.controlBar .progressBar .progressBarHoverText {
+    top: calc(var(--progressHeight) * -4);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: var(--controlsHeight);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    text-align: center;
+    border-radius: 0.5rem;
+}
 .controlBar .controls {
     width: var(--videoWidth);
     height: var(--controlsHeight);

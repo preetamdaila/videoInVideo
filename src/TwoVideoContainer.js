@@ -17,7 +17,8 @@ export const TwoVideoContainer = (props) => {
     const [bufferAvailable, setBufferAvailable] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [currentPostion, setCurrentPostion] = useState(0);
+    const [currentPosition, setCurrentPosition] = useState(0);
+    const [mouseOverPosition, setMouseOverPosition] = useState(0);
     const [videoElements, setVideoElements] = useState([]);
     const [videoContainerSize, setVideoContainerSize] = useState([
         "mainVideo",
@@ -71,7 +72,7 @@ export const TwoVideoContainer = (props) => {
     };
     const setCurrentStatus = () => {
         console.log(currentTime, duration, currentTime / duration);
-        if (duration > 0) setCurrentPostion(currentTime / duration);
+        if (duration > 0) setCurrentPosition(currentTime / duration);
     };
     const seekVideo = (time) => {
         videoElements.map((e) => (e.currentTime = time));
@@ -105,22 +106,23 @@ export const TwoVideoContainer = (props) => {
         }
     };
     const getMousePostion = (e) => {
+        let progress = 0;
         let elemRect = e.target.getBoundingClientRect();
         let elemLen = elemRect.right - elemRect.left;
         let elemPos = e.clientX - elemRect.left;
-        let progress = (elemPos < 0 ? 0 : elemPos) / elemLen;
+        if (elemLen > 0) progress = (elemPos < 0 ? 0 : elemPos) / elemLen;
         let jumpTime = duration * progress;
         console.log(`${progress}% ${elemPos} ${elemLen}
         duration: ${timeConverter(Math.round(jumpTime))}`);
-        return jumpTime;
+        return { jumpTime: jumpTime, progress: progress };
     };
     console.log(
         `arePaused: ${arePaused}, areWaiting ${areWaiting}
         duration   ${duration}
         current    ${currentTime}
         bufferAvailable   ${bufferAvailable * 100}
-        currentProgress   ${currentPostion * 100}
-        currentBufferRatio ${(bufferAvailable - currentPostion) * 100}`
+        currentProgress   ${currentPosition * 100}
+        currentBufferRatio ${(bufferAvailable - currentPosition) * 100}`
     );
 
     useEffect(() => {
@@ -177,17 +179,30 @@ export const TwoVideoContainer = (props) => {
                 <div
                     className="progressBar positionRelative"
                     id="progressBar"
-                    onMouseMove={(e) => getMousePostion(e)}
-                    onMouseUp={(e) => seekVideo(getMousePostion(e))}
+                    onMouseOver={(e) =>
+                        setMouseOverPosition(getMousePostion(e).progress)
+                    }
+                    onMouseMove={(e) =>
+                        setMouseOverPosition(getMousePostion(e).progress)
+                    }
+                    onMouseOut={() => setMouseOverPosition(0)}
+                    onMouseUp={(e) => seekVideo(getMousePostion(e).jumpTime)}
                 >
                     <div
                         className="currentStatus positionAbsolute"
-                        style={{ transform: `scaleX(${currentPostion})` }}
+                        style={{ transform: `scaleX(${currentPosition})` }}
                     ></div>
                     <div
                         className="bufferStatus positionAbsolute"
                         style={{ transform: `scaleX(${bufferAvailable})` }}
                     ></div>
+                    <div
+                        className="mouseOverProgress positionAbsolute"
+                        style={{ transform: `scaleX(${mouseOverPosition})` }}
+                    ></div>
+                    <div className="progressBarHoverText positionAbsolute">
+                        {mouseOverPosition}
+                    </div>
                 </div>
                 <div className="controls displayFlex">
                     <div className="leftControls displayFlex">
