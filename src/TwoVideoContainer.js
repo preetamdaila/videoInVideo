@@ -12,13 +12,15 @@ export const TwoVideoContainer = (props) => {
 
     const [arePaused, setArePaused] = useState(true);
     const [areWaiting, setAreWaiting] = useState([true, true]);
-    const [isMuted, setIsMuted] = useState(true);
+    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(50);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [bufferAvailable, setBufferAvailable] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [currentPosition, setCurrentPosition] = useState(0);
     const [mouseOverPosition, setMouseOverPosition] = useState(0);
+    const [timeTooltipTextPosition, setTimeTooltipTextPosition] = useState(0);
     const [videoElements, setVideoElements] = useState([]);
     const [videoContainerSize, setVideoContainerSize] = useState([
         "mainVideo",
@@ -78,6 +80,7 @@ export const TwoVideoContainer = (props) => {
         videoElements.map((e) => (e.currentTime = time));
     };
     const timeConverter = (timeInSeconds) => {
+        timeInSeconds = Math.trunc(timeInSeconds);
         let minutes = Math.floor(timeInSeconds / 60);
         let seconds = timeInSeconds % 60;
         return (
@@ -105,15 +108,38 @@ export const TwoVideoContainer = (props) => {
             } catch (e) {}
         }
     };
+    const changeVolume = (volume) => {
+        videoElements.map((e) => (e.volume = volume / 100));
+        console.log(volume);
+        if (volume == 0) {
+            setIsMuted(true);
+        } else {
+            setIsMuted(false);
+        }
+        setVolume(volume);
+    };
+    const getProgressTime = (progress) => {
+        return duration * progress;
+    };
+    const getTooltipLocation = (position, length) => {
+        let tooltipSize = getComputedStyle(
+            document.documentElement
+        ).getPropertyValue("--tooltip-width");
+        if (position - tooltipSize / 2 < 0) return tooltipSize / 2;
+        if (position > length - tooltipSize / 2)
+            return length - tooltipSize / 2;
+        else return position;
+    };
     const getMousePostion = (e) => {
         let progress = 0;
         let elemRect = e.target.getBoundingClientRect();
         let elemLen = elemRect.right - elemRect.left;
         let elemPos = e.clientX - elemRect.left;
         if (elemLen > 0) progress = (elemPos < 0 ? 0 : elemPos) / elemLen;
-        let jumpTime = duration * progress;
+        let jumpTime = getProgressTime(progress);
         console.log(`${progress}% ${elemPos} ${elemLen}
         duration: ${timeConverter(Math.round(jumpTime))}`);
+        setTimeTooltipTextPosition(getTooltipLocation(elemPos, elemLen));
         return { jumpTime: jumpTime, progress: progress };
     };
     console.log(
@@ -200,8 +226,11 @@ export const TwoVideoContainer = (props) => {
                         className="mouseOverProgress positionAbsolute"
                         style={{ transform: `scaleX(${mouseOverPosition})` }}
                     ></div>
-                    <div className="progressBarHoverText positionAbsolute">
-                        {mouseOverPosition}
+                    <div
+                        className="progressBarHoverText  positionAbsolute"
+                        style={{ left: timeTooltipTextPosition }}
+                    >
+                        {timeConverter(getProgressTime(mouseOverPosition))}
                     </div>
                 </div>
                 <div className="controls displayFlex">
@@ -213,19 +242,41 @@ export const TwoVideoContainer = (props) => {
                                 alt="icon"
                             />
                         </div>
-                        <div className="controlIcon">
+                        <div className="controlIcon volume displayFlex">
                             <img
                                 src={isMuted ? VolumeOffIcon : VolumeIcon}
                                 onClick={() => setIsMuted(!isMuted)}
                                 alt="icon"
                             />
+                            <div className="volumeSelector positionRelative">
+                                <div className="volumeBar positionAbsolute">
+                                    <div
+                                        className="currentVolumeBar"
+                                        style={{
+                                            transform: `scaleX(${
+                                                volume / 100
+                                            })`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <input
+                                    className="volumeSlider positionAbsolute"
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    defaultChecked={volume}
+                                    onChange={(e) =>
+                                        changeVolume(e.target.value)
+                                    }
+                                ></input>
+                            </div>
                         </div>
                         <div className="controlTime displayFlex">
                             <span className="currentTime">
-                                {timeConverter(Math.trunc(currentTime))}
+                                {timeConverter(currentTime)}
                             </span>
                             <span className="duration">
-                                {timeConverter(Math.trunc(duration))}
+                                {timeConverter(duration)}
                             </span>
                         </div>
                     </div>
