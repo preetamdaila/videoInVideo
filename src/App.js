@@ -12,6 +12,7 @@ export default function App() {
                 audioVideoRecording={
                     "https://jsoncompare.org/LearningContainer/SampleFiles/Video/MP4/sample-mp4-file.mp4"
                 }
+                isPlayable={true}
             />
         </div>
     );

@@ -13,6 +13,8 @@
     --transition: bottom 200ms ease-in 150ms;
     --tooltip-width: 64;
     --font-color: #eee;
+    --accent-color: #00acff;
+    --accent-secondary: #fff;
 }
 
 .App {
@@ -94,7 +96,7 @@
 
 .controlBar .progressBar::before {
     content: "";
-    background-color: #00acff;
+    background-color: var(--accent-color);
     opacity: 0.25;
     width: 100%;
     position: absolute;
@@ -106,7 +108,7 @@
 
 .controlBar .progressBar .currentStatus {
     height: var(--progressHeight);
-    background-color: #00acff;
+    background-color: var(--accent-color);
     width: 100%;
     left: 0;
     transform-origin: 0 0;
@@ -116,7 +118,7 @@
 .controlBar .progressBar .bufferStatus {
     opacity: 0.5;
     height: var(--progressHeight);
-    background-color: #00acff;
+    background-color: var(--accent-color);
     width: 100%;
     left: 0;
     transform-origin: 0 0;
@@ -125,7 +127,7 @@
 .controlBar .progressBar .mouseOverProgress {
     opacity: 0.5;
     height: var(--progressHeight);
-    background-color: #fff;
+    background-color: var(--accent-secondary);
     width: 100%;
     left: 0;
     transform-origin: 0 0;
@@ -174,7 +176,7 @@
     height: 10px;
     width: calc(100% - 10px);
     bottom: calc(-5px + var(--controlsHeight) / 2);
-    background-color: #fff;
+    background-color: var(--accent-secondary);
 }
 .controlBar
     .controls
@@ -184,7 +186,7 @@
     .currentVolumeBar {
     width: 100%;
     height: 100%;
-    background-color: red;
+    background-color: var(--accent-color);
     transform-origin: 0 0;
 }
 .controlBar .controls .controlIcon .volumeSelector input.volumeSlider {

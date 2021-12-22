@@ -8,9 +8,9 @@ import VolumeIcon from "./assets/images/volume.svg";
 import VolumeOffIcon from "./assets/images/volumeoff.svg";
 
 export const TwoVideoContainer = (props) => {
-    const { screenRecording, audioVideoRecording } = props;
+    const { screenRecording, audioVideoRecording, isPlayable } = props;
 
-    const [arePaused, setArePaused] = useState(true);
+    const [arePaused, setArePaused] = useState(!isPlayable);
     const [areWaiting, setAreWaiting] = useState([true, true]);
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(50);
